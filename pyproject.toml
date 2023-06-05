@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "fastapi-training"
+version = "0.1.0"
+description = ""
+authors = ["leon0719 <leon0970865551@gmail.com>"]
+readme = "README.md"
+packages = [{include = "fastapi_training"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = {extras = ["all"], version = "^0.96.0"}
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+pre-commit = "^3.3.2"
+flake8 = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
