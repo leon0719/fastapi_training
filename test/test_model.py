@@ -3,7 +3,7 @@ import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-from ..models.model import User
+from models.model import User
 
 
 def test_user_model():
