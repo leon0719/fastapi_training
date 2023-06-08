@@ -1,3 +1,5 @@
 .venv
 __pycache__
 .pytest_cache
+.flake8
+*.py[cod]
