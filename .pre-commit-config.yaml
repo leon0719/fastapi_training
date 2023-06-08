@@ -10,10 +10,3 @@ repos:
   rev: 6.0.0
   hooks:
   - id: flake8
-- repo: local
-  hooks:
-  - id: pytest
-    name: Run pytest
-    entry: pytest --color=yes
-    language: system
-    types: [python]
