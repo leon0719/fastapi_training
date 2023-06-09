@@ -10,3 +10,13 @@ repos:
   rev: 6.0.0
   hooks:
   - id: flake8
+- repo: local
+  hooks:
+  - id: pytest-check
+    stages: [push]
+    types: [python]
+    name: pytest-check
+    entry: .venv/bin/python -m pytest -v tests/
+    language: system
+    pass_filenames: false
+    always_run: true
