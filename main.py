@@ -1,30 +1,12 @@
-from typing import Union
-
-from fastapi import FastAPI, Body
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
 
-
-class Item(BaseModel):
-    name: str
-    description: Union[str, None] = None
-    price: float
-    tax: Union[float, None] = None
+items = {"foo": "The Foo Wrestlers"}
 
 
-class User(BaseModel):
-    username: str
-    full_name: Union[str, None] = None
-
-
-@app.put("/items/{item_id}")
-async def update_item(item_id: int,
-                      item: Item,
-                      user: User,
-                      importance: int = Body()):
-    results = {"item_id": item_id,
-               "item": item,
-               "user": user,
-               "importance": importance}
-    return results
+@app.get("/items/{item_id}")
+async def read_item(item_id: str):
+    if item_id not in items:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return {"item": items[item_id]}
