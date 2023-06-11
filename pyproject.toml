@@ -9,6 +9,7 @@ packages = [{include = "fastapi_training"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 fastapi = {extras = ["all"], version = "^0.96.0"}
+pymongo = "^4.3.3"
 
 
 [tool.poetry.group.dev.dependencies]

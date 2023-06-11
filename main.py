@@ -1,12 +1,17 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
+from pymongo import MongoClient
 
 app = FastAPI()
 
-items = {"foo": "The Foo Wrestlers"}
+# Connect to MongoDB
+client = MongoClient('localhost', 27017)
+db = client.school
 
 
-@app.get("/items/{item_id}")
-async def read_item(item_id: str):
-    if item_id not in items:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return {"item": items[item_id]}
+@app.get("/students")
+def get_students():
+    query = {}
+    projection = {"name": True, "_id": False}
+    students = db.students.find(query, projection)
+    student_list = list(students)
+    return student_list
