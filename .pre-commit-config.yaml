@@ -16,7 +16,7 @@ repos:
     stages: [push]
     types: [python]
     name: pytest-check
-    entry: .venv/bin/python -m pytest -v test/
+    entry: .venv/bin/python -m pytest -v tests/
     language: system
     pass_filenames: false
     always_run: true
