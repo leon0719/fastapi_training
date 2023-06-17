@@ -9,6 +9,7 @@ app = FastAPI()
 async def read_main():
     return {"msg": "Hello World"}
 
+
 client = TestClient(app)
 
 
