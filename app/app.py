@@ -1,47 +1,54 @@
-from beanie import init_beanie
-from fastapi import Depends, FastAPI
-
-from db import User, db
-from schemas import UserCreate, UserRead, UserUpdate
-from users import auth_backend, current_active_user, fastapi_users
+from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import Optional
+from random import randrange
+from fastapi import HTTPException, Response, status
 
 app = FastAPI()
 
-app.include_router(
-    fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
-)
-app.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_reset_password_router(),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_verify_router(UserRead),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_users_router(UserRead, UserUpdate),
-    prefix="/users",
-    tags=["users"],
-)
+
+class Post(BaseModel):
+    title: str
+    content: str
+    published: bool = True
+    rating: Optional[int] = None
 
 
-@app.get("/authenticated-route")
-async def authenticated_route(user: User = Depends(current_active_user)):
-    return {"message": f"Hello {user.email}!"}
+my_posts = [
+    {"title": "title of post 1", "content": "content of post 1", "id": 1},
+    {"title": "favorite foods", "content": "I like pizza", "id": 2},
+]
 
 
-@app.on_event("startup")
-async def on_startup():
-    await init_beanie(
-        database=db,
-        document_models=[
-            User,
-        ],
-    )
+def find_post(id):
+    for p in my_posts:
+        if p["id"] == id:
+            return p
+
+
+@app.get("/")
+def root():
+    return {"message": "Hello World"}
+
+
+@app.get("/posts")
+def get_posts():
+    return {"data": my_posts}
+
+
+@app.post("/posts", status_code=status.HTTP_201_CREATED)
+def create_posts(post: Post):
+    post_dict = post.dict()
+    post_dict["id"] = randrange(0, 1000000)
+    print(post_dict)
+    my_posts.append(post_dict)
+    return {"data": post_dict}
+
+
+@app.get("/posts/{id}")
+def get_post(id: int, response: Response):
+    post = find_post(id)
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post {id} not found")
+    return {"post_detail": post}
