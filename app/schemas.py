@@ -1,14 +1,25 @@
-from beanie import PydanticObjectId
-from fastapi_users import schemas
+from pydantic import BaseModel, EmailStr
+from datetime import datetime
 
 
-class UserRead(schemas.BaseUser[PydanticObjectId]):
+class PostBase(BaseModel):
+    title: str
+    content: str
+    published: bool = True
+
+
+class PostCreate(PostBase):
     pass
 
 
-class UserCreate(schemas.BaseUserCreate):
-    pass
+class Post(PostBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
 
 
-class UserUpdate(schemas.BaseUserUpdate):
-    pass
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
