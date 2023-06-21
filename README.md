@@ -64,8 +64,6 @@ uvicorn main:app --reload
 
 ## 進階使用
 
-上述步驟僅為入門，FastAPI 還提供了許多進階功能，例如：
-
 - 請求驗證和授權
 - 處理 POST、PUT 和 DELETE 請求
 - 使用路徑參數和查詢參數
