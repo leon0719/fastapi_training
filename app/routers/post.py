@@ -27,7 +27,6 @@ def create_posts(
     db: Session = Depends(get_db),
     current_user: int = Depends(oauth2.get_current_user),
 ):
-    print(current_user)
     new_post = models.Post(owner_id=current_user.id, **post.dict())
     db.add(new_post)
     db.commit()
@@ -36,7 +35,7 @@ def create_posts(
     return new_post
 
 
-@router.get("/{id}", response_model=List[schemas.Post])
+@router.get("/{id}", response_model=schemas.Post)
 def get_post(
     id: int,
     db: Session = Depends(get_db),
@@ -95,4 +94,4 @@ def update_post(
         )
     post_query.update(updated_post.dict(), synchronize_session=False)
     db.commit()
-    return {"data": post_query.first()}
+    return post_query.first()
