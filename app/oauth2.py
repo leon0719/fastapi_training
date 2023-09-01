@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session
 import database
 import models
 from config import settings
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 # SECRET_KEY
 # Algorithm
