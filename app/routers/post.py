@@ -1,6 +1,7 @@
 from typing import Optional
 from fastapi import HTTPException, Response, status, APIRouter, Depends
 from sqlalchemy.orm import Session
+from sqlalchemy import func  # Can use Aggregation Functions
 from typing import List
 import sys
 import oauth2
@@ -14,7 +15,7 @@ import schemas
 router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
-@router.get("/", response_model=List[schemas.Post])
+@router.get("/", response_model=List[schemas.PostOut])
 def get_posts(
     db: Session = Depends(get_db),
     current_user: int = Depends(oauth2.get_current_user),
@@ -22,16 +23,20 @@ def get_posts(
     skip: int = 0,
     search: Optional[str] = "",
 ):
-    print(limit)
-
-    posts = (
-        db.query(models.Post)
-        .filter(models.Post.title.contains(search))
-        .limit(limit)
-        .offset(skip)
+    # posts = (
+    #     db.query(models.Post)
+    #     .filter(models.Post.title.contains(search))
+    #     .limit(limit)
+    #     .offset(skip)
+    #     .all()
+    # )  # defult left inner join
+    results = (
+        db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
+        .join(models.Vote, models.Vote.post_id == models.Post.id, isouter=True)
+        .group_by(models.Post.id)
         .all()
     )
-    return posts
+    return results
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
